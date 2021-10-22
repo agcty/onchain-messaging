@@ -14,13 +14,16 @@
     "test-all": "yarn lint && yarn type-check && yarn test"
   },
   "dependencies": {
+    "@metamask/onboarding": "^1.0.1",
     "@tailwindcss/forms": "^0.3.4",
     "@tailwindcss/typography": "^0.4.1",
     "autoprefixer": "^10.3.7",
+    "js-cookie": "^3.0.1",
     "next": "11.1.2",
     "postcss": "^8.3.9",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "react-hot-toast": "^2.1.1",
     "sass": "^1.42.1",
     "tailwindcss": "^2.2.16"
   },

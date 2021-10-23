@@ -1,3 +1,4 @@
+import EthCrypto from "eth-crypto"
 import { ethers } from "ethers"
 
 import abi from "@abi"
@@ -34,12 +35,14 @@ async function send(to: string, message: string) {
 
   console.log("pubkey", pubKey, ethers.utils.computeAddress(pubKey))
 
-  // const encrypted = await EthCrypto.encryptWithPublicKey(
-  //   "bf1cc3154424dc22191941d9f4f50b063a2b663a2337e5548abea633c1d06ece...", // publicKey
-  //   message
-  // )
+  const encrypted = await EthCrypto.encryptWithPublicKey(
+    pubKey.slice(2),
+    message
+  )
 
-  // const encryptedMessage = EthCrypto.cipher.stringify(encrypted)
+  const encryptedMessage = EthCrypto.cipher.stringify(encrypted)
+
+  console.log("encrypted", encryptedMessage)
 
   const contract = new ethers.Contract(
     contractAddress,
@@ -47,12 +50,13 @@ async function send(to: string, message: string) {
     ethersProvider.getSigner()
   )
 
-  const tx = await contract.send(to, "hello world", false)
+  const tx = await contract.send(to, encryptedMessage, true)
   await tx.wait()
 }
 
 export { send }
 
+// See https://gist.github.com/chrsengel/2b29809b8f7281b8f10bbe041c1b5e00
 async function getPublicKey(tx: any) {
   const expandedSig = {
     r: tx.r,
@@ -60,19 +64,11 @@ async function getPublicKey(tx: any) {
     v: tx.v,
   }
   const signature = ethers.utils.joinSignature(expandedSig)
-  const txData = {
-    gasPrice: tx.gasPrice,
-    gasLimit: tx.gasLimit,
-    value: tx.value,
-    nonce: tx.nonce,
-    data: tx.data,
-    chainId: tx.chainId,
-    to: tx.to, // you might need to include this if it's a regular tx and not simply a contract deployment
-  }
-  const rsTx = await ethers.utils.resolveProperties(txData)
+  const rsTx = await ethers.utils.resolveProperties(tx)
   const raw = ethers.utils.serializeTransaction(rsTx) // returns RLP encoded tx
   const msgHash = ethers.utils.keccak256(raw) // as specified by ECDSA
   const msgBytes = ethers.utils.arrayify(msgHash) // create binary hash
+  const recoveredPubKey = ethers.utils.recoverPublicKey(msgBytes, signature)
 
-  return ethers.utils.recoverPublicKey(msgBytes, signature)
+  return recoveredPubKey
 }

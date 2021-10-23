@@ -4,8 +4,9 @@ import { ArrowSmRightIcon } from "@heroicons/react/solid"
 import classNames from "classnames"
 import dynamic from "next/dynamic"
 import Head from "next/head"
+import { useQuery } from "react-query"
 
-import { send } from "@utils/contract"
+import { getMessage, send } from "@utils/contract"
 
 const Profile = dynamic(
   () => import("@components/Profile").then((m) => m.Profile),
@@ -13,6 +14,27 @@ const Profile = dynamic(
 )
 
 export default function Home() {
+  const messageParams = {
+    from: "0xFd37f4625CA5816157D55a5b3F7Dd8DD5F8a0C2F",
+    receiver: "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+    messageId: 0,
+  }
+
+  const { data } = useQuery(
+    [
+      "/fetch",
+      messageParams.receiver,
+      messageParams.from,
+      messageParams.messageId,
+    ],
+    () =>
+      getMessage(
+        messageParams.receiver,
+        messageParams.from,
+        messageParams.messageId
+      )
+  )
+
   return (
     <div>
       <Head>
@@ -69,14 +91,35 @@ export default function Home() {
                   fugit voluptatibus ut officia iure est veniam eius, maxime
                   eveniet aliquid rerum ratione!
                 </Message>
+
                 <Message outgoing>
                   Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo,
                   voluptatem! Rem, autem soluta nihil mollitia voluptates earum
                   fugit voluptatibus ut officia iure est veniam eius, maxime
                   eveniet aliquid rerum ratione!
                 </Message>
+
+                <Message>{data?.content}</Message>
+
                 <Message outgoing>Lorem ipsum dolor</Message>
               </div>
+
+              <button
+                className="px-8 py-4"
+                title="Send message"
+                onClick={async () => {
+                  const message = await getMessage(
+                    messageParams.receiver,
+                    messageParams.from,
+                    0
+                  )
+
+                  console.log(message)
+                }}
+              >
+                <ArrowSmRightIcon className="w-8 h-8" /> Fetch message
+              </button>
+
               <div className="flex">
                 <input
                   className="flex-1 px-8 py-4 border-none"

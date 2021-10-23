@@ -2,7 +2,13 @@ import React from "react"
 
 import { ArrowSmRightIcon } from "@heroicons/react/solid"
 import classNames from "classnames"
+import dynamic from "next/dynamic"
 import Head from "next/head"
+
+const Profile = dynamic(
+  () => import("@components/Profile").then((m) => m.Profile),
+  { ssr: false }
+)
 
 export default function Home() {
   return (
@@ -11,12 +17,8 @@ export default function Home() {
         <title>Tolk</title>
       </Head>
       <div className="flex w-full h-screen divide-x">
-        <div className="w-full max-w-xs p-20 pr-4 space-y-6">
-          <div>
-            <img src="https://via.placeholder.com/32x32" alt="" />
-            <h1 className="text-xl font-bold">Jack.eth</h1>
-            <p className="text-sm text-gray-500">0x12341234</p>
-          </div>
+        <div className="w-full max-w-xs p-20 pr-6 space-y-6">
+          <Profile />
 
           <div className="space-y-2">
             <h2 className="text-xs uppercase text-[#8A857B]">Last 24 hours</h2>
@@ -107,7 +109,7 @@ function Message({ children, outgoing }: any) {
 
 function User({ name, icon, unread }: any) {
   return (
-    <button className="flex items-center w-full px-4 font-semibold text-left rounded-lg py-1.5 space-x-2 hover:bg-[#E8E3D7]">
+    <button className="flex items-center w-full pl-4 font-semibold text-left rounded-lg pr-1.5 py-1.5 space-x-2 hover:bg-[#E8E3D7]">
       <img src={icon} className="rounded-full" alt="" />
       <span className="flex-1 w-full">{name}</span>
       {!!unread && (

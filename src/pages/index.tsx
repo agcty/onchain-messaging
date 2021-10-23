@@ -5,6 +5,8 @@ import classNames from "classnames"
 import dynamic from "next/dynamic"
 import Head from "next/head"
 
+import { send } from "@utils/contract"
+
 const Profile = dynamic(
   () => import("@components/Profile").then((m) => m.Profile),
   { ssr: false }
@@ -81,7 +83,17 @@ export default function Home() {
                   type="text"
                   placeholder="Enter your message…"
                 />
-                <button className="px-8 py-4" title="Send message">
+                <button
+                  className="px-8 py-4"
+                  title="Send message"
+                  onClick={async () => {
+                    await send(
+                      "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+                      "Hallo Bruder!",
+                      false
+                    )
+                  }}
+                >
                   <ArrowSmRightIcon className="w-8 h-8" />
                 </button>
               </div>

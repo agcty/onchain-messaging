@@ -4,8 +4,11 @@ import { ArrowSmRightIcon } from "@heroicons/react/solid"
 import classNames from "classnames"
 import dynamic from "next/dynamic"
 import Head from "next/head"
-import { useQuery } from "react-query"
+import toast from "react-hot-toast"
+import { useInfiniteQuery } from "react-query"
 
+import { useMetamask } from "@hooks/useMetamask"
+import { MessageParams } from "@types"
 import { getMessage, send } from "@utils/contract"
 
 const Profile = dynamic(
@@ -14,25 +17,22 @@ const Profile = dynamic(
 )
 
 export default function Home() {
-  const messageParams = {
-    from: "0xFd37f4625CA5816157D55a5b3F7Dd8DD5F8a0C2F",
-    receiver: "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+  const { accounts } = useMetamask()
+
+  const initialMessageParams: MessageParams = {
+    receiver: accounts[0],
+    sender: "0xFd37f4625CA5816157D55a5b3F7Dd8DD5F8a0C2F",
     messageId: 0,
   }
 
-  const { data } = useQuery(
-    [
-      "/fetch",
-      messageParams.receiver,
-      messageParams.from,
-      messageParams.messageId,
-    ],
-    () =>
-      getMessage(
-        messageParams.receiver,
-        messageParams.from,
-        messageParams.messageId
-      )
+  const { data, fetchNextPage } = useInfiniteQuery(
+    "/fetchMessages",
+    ({ pageParam = 0 }) =>
+      getMessage({ ...initialMessageParams, messageId: pageParam }),
+    {
+      getNextPageParam: (lastPage, pages) => lastPage.message.messageId + 1,
+      keepPreviousData: true,
+    }
   )
 
   return (
@@ -85,36 +85,22 @@ export default function Home() {
             </h1>
             <div className="flex flex-col h-full mx-auto overflow-auto bg-white rounded-t-3xl divide-y max-w-prose">
               <div className="flex-1 px-8 py-4 space-y-8">
-                <Message>
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo,
-                  voluptatem! Rem, autem soluta nihil mollitia voluptates earum
-                  fugit voluptatibus ut officia iure est veniam eius, maxime
-                  eveniet aliquid rerum ratione!
-                </Message>
-
-                <Message outgoing>
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo,
-                  voluptatem! Rem, autem soluta nihil mollitia voluptates earum
-                  fugit voluptatibus ut officia iure est veniam eius, maxime
-                  eveniet aliquid rerum ratione!
-                </Message>
-
-                <Message>{data?.content}</Message>
-
-                <Message outgoing>Lorem ipsum dolor</Message>
+                {data?.pages?.map((item) => (
+                  <Message key={item.message.messageId}>
+                    {item.message.content}
+                  </Message>
+                ))}
               </div>
 
               <button
                 className="px-8 py-4"
                 title="Send message"
                 onClick={async () => {
-                  const message = await getMessage(
-                    messageParams.receiver,
-                    messageParams.from,
-                    0
-                  )
-
-                  console.log(message)
+                  try {
+                    await fetchNextPage()
+                  } catch (error) {
+                    toast.error("No more messages to fetch!")
+                  }
                 }}
               >
                 <ArrowSmRightIcon className="w-8 h-8" /> Fetch message

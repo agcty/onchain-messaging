@@ -1,5 +1,7 @@
 import { ethers } from "ethers"
 
+import { MessageParams } from "@types"
+
 import abi from "../abi"
 
 async function send(to: string, message: string, encrypted: boolean) {
@@ -23,11 +25,14 @@ async function send(to: string, message: string, encrypted: boolean) {
   await tx.wait()
 }
 
-async function getMessage(
-  receiver: string,
-  from: string,
-  messageIndex: number
-) {
+interface Message {
+  sender: string
+  receiver: string
+  messageId: number
+  content: string
+}
+
+async function getMessage(messageParams: MessageParams) {
   let contractAddress = "0x5fbdb2315678afecb367f032d93f642f64180aa3"
 
   const provider = window["ethereum"]
@@ -44,9 +49,20 @@ async function getMessage(
     ethersProvider.getSigner()
   )
 
-  const tx = await contract.inboxes(receiver, from, messageIndex)
+  const message = await contract.inboxes(
+    messageParams.receiver,
+    messageParams.sender,
+    messageParams.messageId
+  )
 
-  return tx
+  const formattedMessage: Message = {
+    sender: message.sender,
+    receiver: message.receiver,
+    messageId: messageParams.messageId,
+    content: message.content,
+  }
+
+  return { message: formattedMessage }
 }
 
 export { send, getMessage }

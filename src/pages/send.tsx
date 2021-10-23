@@ -37,7 +37,7 @@ export default function Send() {
       <div className="flex flex-col w-auto h-full mx-auto max-w-prose">
         <h1 className="mb-4 text-xl font-bold">Send a message</h1>
         <form
-          className="flex flex-col w-full h-full p-8 mx-auto overflow-auto text-white bg-[#00AD67] rounded-t-3xl divide-y max-w-prose space-y-4"
+          className="flex flex-col w-full h-full p-8 mx-auto overflow-auto text-white bg-green-500 rounded-t-3xl divide-y max-w-prose space-y-4"
           onSubmit={handleSubmit(onSubmit)}
         >
           <fieldset className="p-4 text-black rounded-lg bg-[#F4EFE7]">

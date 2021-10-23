@@ -14,10 +14,10 @@ async function send(to: string, message: string) {
     throw Error("Not connected!")
   }
 
-  const ethersProvider = new ethers.providers.Web3Provider(provider)
+  const ethersProvider = new ethers.providers.Web3Provider(provider, "rinkeby")
 
   // @todo make multichain
-  let etherscanProvider = new ethers.providers.EtherscanProvider()
+  let etherscanProvider = new ethers.providers.EtherscanProvider("rinkeby")
 
   const history = await etherscanProvider.getHistory(to)
 
@@ -27,9 +27,16 @@ async function send(to: string, message: string) {
     throw new Error("No previous transaction found")
   }
 
-  const theTx = await ethersProvider.getTransaction(
-    "0x9e1305489c8d9e6f0eba94fbae6c5402c2c7d719a0e370b3ca20a11fa3602968"
-  )
+  console.log("Previous transaction", previousTx)
+
+  // @todo get tx from current chain
+  const theTx = await ethersProvider.getTransaction(previousTx.hash)
+
+  if (!theTx) {
+    throw new Error("Could not fetch previous transaction")
+  }
+
+  console.log("Raw transaction", theTx)
 
   const pubKey = await getPublicKey(theTx)
 
@@ -46,7 +53,7 @@ async function send(to: string, message: string) {
     ethersProvider.getSigner()
   )
 
-  const tx = await contract.send(to, encryptedMessage, true)
+  const tx = await contract.send(to, encryptedMessage, "default")
   await tx.wait()
 }
 
@@ -91,7 +98,7 @@ async function getMessage(messageParams: MessageParams) {
     ethersProvider.getSigner()
   )
 
-  const message = await contract.inboxes(
+  const message = await contract.messages(
     messageParams.receiver,
     messageParams.sender,
     messageParams.messageId

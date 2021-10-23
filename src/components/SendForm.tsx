@@ -2,6 +2,7 @@ import React from "react"
 
 import { ArrowSmRightIcon } from "@heroicons/react/solid"
 import { useForm } from "react-hook-form"
+import toast from "react-hot-toast"
 
 import { send } from "@utils/contract"
 
@@ -23,9 +24,15 @@ export function SendForm() {
   async function onSubmit({ message }: Fields) {
     console.log(message)
 
-    await send("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266", message)
+    try {
+      await send("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266", message)
 
-    reset({ message: "" })
+      reset({ message: "" })
+    } catch (e) {
+      console.error(e)
+
+      toast(e.message)
+    }
   }
 
   return (

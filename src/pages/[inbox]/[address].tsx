@@ -9,10 +9,9 @@ import { useInfiniteQuery } from "react-query"
 import { SendForm } from "@components/SendForm"
 import { useMetamask } from "@hooks/useMetamask"
 import Layout from "@layout/Layout"
-import { MessageParams } from "@types"
 import { getMessage } from "@utils/contract"
 
-const Address = dynamic(
+const Address = dynamic<any>(
   () => import("@components/Address").then((m) => m.Address),
   { ssr: false }
 )
@@ -25,19 +24,16 @@ export default function Chat() {
 
   const { accounts } = useMetamask()
 
-  const initialMessageParams: MessageParams = {
-    receiver: accounts[0],
-    sender: address,
-    messageId: 0,
-  }
-
   const { data, fetchNextPage } = useInfiniteQuery(
     ["/fetchMessages", inbox, accounts[0], address],
     ({ pageParam = 0 }) =>
-      getMessage({ ...initialMessageParams, messageId: pageParam }),
+      getMessage({
+        receiver: accounts[0],
+        sender: address,
+        messageId: pageParam,
+      }),
     {
       getNextPageParam: (lastPage, pages) => lastPage.message.messageId + 1,
-      keepPreviousData: true,
     }
   )
 

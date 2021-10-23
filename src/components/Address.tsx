@@ -4,7 +4,7 @@ import { useQuery } from "react-query"
 
 import { formatAddress } from "@utils/formatter"
 
-export function Address({ account }: any) {
+export function Address({ account }: { account: string }) {
   const { data: name } = useQuery(
     ["ens", account],
     async () => {
@@ -30,7 +30,10 @@ export function Address({ account }: any) {
   if (!account) return null
 
   return (
-    <span className="relative items-center inline-block pl-6 space-x-1">
+    <span
+      className="relative items-center inline-block pl-6 space-x-1"
+      title={account}
+    >
       <img
         src={avatar}
         className="absolute left-0 w-6 h-6 rounded top-1/2 transform -translate-y-1/2"

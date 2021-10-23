@@ -28,46 +28,74 @@ export default function Create() {
 
   return (
     <Layout>
-      <h1 className="mb-4 text-xl font-bold">Create a new Inbox</h1>
+      <h1 className="mb-4 text-xl font-bold">Create new Inbox</h1>
 
       <form
-        className="flex flex-col w-full h-full p-8 mx-auto overflow-auto text-white bg-[#00AD67] rounded-t-3xl divide-y max-w-prose space-y-4"
+        className="flex flex-col w-full h-full p-8 px-24 py-12 mx-auto overflow-auto text-white bg-black rounded-32 min-w-[800px]"
         onSubmit={handleSubmit(onSubmit)}
       >
-        <fieldset className="p-4 text-black rounded-lg bg-[#F4EFE7]">
-          <label className="block" htmlFor="address">
-            Inbox name (all lowercase)
-          </label>
-          <input type="text" {...register("name")} />
-        </fieldset>
+        <div className="space-y-6">
+          <fieldset className="p-4 text-black rounded-xl bg-[#F4EFE7]">
+            <label className="block" htmlFor="address">
+              Inbox name (all lowercase)
+            </label>
 
-        <fieldset className="p-4 text-black rounded-lg bg-[#F4EFE7]">
-          <label className="block" htmlFor="address">
-            Your text
-          </label>
-          <textarea {...register("description")} />
-        </fieldset>
+            <input
+              {...register("name")}
+              type="text"
+              className="block w-full py-2 mt-1 border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              placeholder="apes"
+            />
+          </fieldset>
 
-        <fieldset className="p-4 text-black rounded-lg bg-[#F4EFE7]">
-          <label className="block" htmlFor="address">
-            NFT Contract
-          </label>
-          <input type="text" {...register("condition.nftContract")} />
-        </fieldset>
+          <fieldset className="p-4 text-black rounded-xl bg-[#F4EFE7]">
+            <label className="block" htmlFor="address">
+              Description
+            </label>
 
-        <fieldset className="p-4 text-black rounded-lg bg-[#F4EFE7]">
-          <label className="block" htmlFor="address">
-            NFT Count
-          </label>
-          <input type="numer" {...register("condition.count")} />
-        </fieldset>
+            <textarea
+              id="about"
+              name="about"
+              rows={3}
+              className="block w-full mt-1 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              {...register("description")}
+            />
+          </fieldset>
 
-        <p className="text-center">
+          <fieldset className="p-4 text-black rounded-xl bg-[#F4EFE7]">
+            <label className="block" htmlFor="address">
+              NFT Contract
+            </label>
+
+            <input
+              {...register("condition.nftContract")}
+              type="text"
+              className="block w-full py-2 mt-1 border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              placeholder="apes"
+            />
+          </fieldset>
+
+          <fieldset className="p-4 text-black rounded-xl bg-[#F4EFE7]">
+            <label className="block" htmlFor="address">
+              NFT Count
+            </label>
+
+            <input
+              {...register("condition.count")}
+              type="text"
+              className="block w-full py-2 mt-1 border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              placeholder="apes"
+            />
+          </fieldset>
+        </div>
+
+        <p className="mt-10 text-sm text-center">
           This is message is fully encrypted and immutable.
           <br /> Only the receiver will be avalaible to decrypt.
           <br /> Finally chat the way you ape, freely.
         </p>
-        <button className="px-4 py-2 mx-auto text-white bg-black border-none rounded-lg">
+
+        <button className="px-6 mx-auto mt-10 font-bold text-white bg-green-500 border-none rounded-full py-2.5">
           Send Message
         </button>
       </form>

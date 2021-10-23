@@ -7,9 +7,10 @@ import Head from "next/head"
 import toast from "react-hot-toast"
 import { useInfiniteQuery } from "react-query"
 
+import { SendForm } from "@components/SendForm"
 import { useMetamask } from "@hooks/useMetamask"
 import { MessageParams } from "@types"
-import { getMessage, send } from "@utils/contract"
+import { getMessage } from "@utils/contract"
 
 const Profile = dynamic(
   () => import("@components/Profile").then((m) => m.Profile),
@@ -106,26 +107,7 @@ export default function Home() {
                 <ArrowSmRightIcon className="w-8 h-8" /> Fetch message
               </button>
 
-              <div className="flex">
-                <input
-                  className="flex-1 px-8 py-4 border-none"
-                  type="text"
-                  placeholder="Enter your message…"
-                />
-                <button
-                  className="px-8 py-4"
-                  title="Send message"
-                  onClick={async () => {
-                    await send(
-                      "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-                      "Hallo Bruder!",
-                      false
-                    )
-                  }}
-                >
-                  <ArrowSmRightIcon className="w-8 h-8" />
-                </button>
-              </div>
+              <SendForm />
             </div>
           </div>
         </div>

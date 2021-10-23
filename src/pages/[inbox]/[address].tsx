@@ -39,18 +39,20 @@ export default function Chat() {
 
   return (
     <Layout>
-      <div className="flex flex-col w-auto h-full mx-auto max-w-prose">
+      <div className="flex flex-col w-auto h-full mx-auto">
         <h1 className="mb-4 text-xl font-bold">
           Chatting with <Address account={address} />
         </h1>
-        <div className="flex flex-col w-full h-full mx-auto overflow-auto bg-white rounded-t-3xl divide-y max-w-prose space-y-4">
-          <div className="flex-1 px-8 py-4 space-y-8">
+
+        <div className="flex flex-col w-full h-full mx-auto overflow-hidden bg-white rounded-32 divide-y space-y-4 min-w-[800px]">
+          <div className="flex-1 px-8 py-4 space-y-8 max-w-prose">
             {data?.pages?.map((item) => (
               <Message key={item.message.messageId}>
                 {item.message.content}
               </Message>
             ))}
           </div>
+
           <button
             className="block px-3 py-2 mx-auto text-sm text-white bg-green-500 rounded-xl"
             onClick={async () => {

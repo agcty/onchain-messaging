@@ -48,6 +48,7 @@ export function SendForm() {
         placeholder="Enter your message…"
         {...register("message", { required: true })}
       />
+
       <button
         type="submit"
         disabled={!isValid || isSubmitting}

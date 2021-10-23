@@ -107,4 +107,19 @@ async function getMessage(messageParams: MessageParams) {
   return { message: formattedMessage }
 }
 
-export { send, getMessage }
+async function getSenders(inbox: string) {
+  // @Todo implement me
+
+  return [
+    "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+    "0xFd37f4625CA5816157D55a5b3F7Dd8DD5F8a0C2F",
+  ]
+}
+
+async function getInboxes() {
+  // @Todo implement me
+
+  return ["public"]
+}
+
+export { send, getMessage, getSenders, getInboxes }

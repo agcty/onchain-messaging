@@ -26,9 +26,12 @@ export function Profile() {
   const { data: avatar } = useQuery(
     ["avatar", account],
     async () => {
-      const avatar = await provider.getAvatar(account)
-      if (!avatar) return makeBlockie(account)
-      return avatar
+      try {
+        const provider = ethers.getDefaultProvider()
+        return provider.getAvatar(account)
+      } finally {
+        return makeBlockie(account)
+      }
     },
     { enabled: !!account }
   )

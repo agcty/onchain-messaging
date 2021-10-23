@@ -40,7 +40,7 @@ export function SendForm() {
       <button
         type="submit"
         disabled={!isValid || isSubmitting}
-        className="px-8 py-4"
+        className="p-4"
         title="Send message"
       >
         <ArrowSmRightIcon className="w-8 h-8" />

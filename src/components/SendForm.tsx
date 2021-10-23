@@ -25,7 +25,11 @@ export function SendForm() {
     console.log(message)
 
     try {
-      await send("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266", message)
+      await send(
+        "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+        message,
+        "default"
+      )
 
       reset({ message: "" })
     } catch (e) {

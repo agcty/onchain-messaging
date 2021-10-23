@@ -1,5 +1,6 @@
 import React from "react"
 
+import { ArrowRightIcon } from "@heroicons/react/solid"
 import dynamic from "next/dynamic"
 import Head from "next/head"
 import Link from "next/link"
@@ -26,13 +27,15 @@ export default function Layout({ children }: any) {
 
           <div className="space-y-2">
             <Link href="/send">
-              <a className="block p-2 bg-green-400 rounded-lg">
-                Send a message
+              <a className="flex items-center justify-between px-4 font-bold text-white bg-green-500 rounded-lg py-2.5">
+                <span>Create an inbox</span>
+                <ArrowRightIcon className="w-5 h-5 text-white"></ArrowRightIcon>
               </a>
             </Link>
             <Link href="/create">
-              <a className="block p-2 text-white bg-gray-900 rounded-lg">
-                Create an inbox
+              <a className="flex items-center justify-between px-4 font-bold text-white bg-gray-900 rounded-lg py-2.5">
+                <span>Create an inbox</span>
+                <ArrowRightIcon className="w-5 h-5 text-white"></ArrowRightIcon>
               </a>
             </Link>
           </div>

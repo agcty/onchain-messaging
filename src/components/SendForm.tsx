@@ -27,7 +27,7 @@ export function SendForm() {
     console.log(message)
 
     try {
-      await send(query.address.toString(), message)
+      await send(query.address.toString(), message, "default")
 
       reset({ message: "" })
     } catch (e) {
@@ -46,6 +46,7 @@ export function SendForm() {
         placeholder="Enter your message…"
         {...register("message", { required: true })}
       />
+
       <button
         type="submit"
         disabled={!isValid || isSubmitting}

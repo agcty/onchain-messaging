@@ -7,16 +7,16 @@ import { MessageParams } from "@types"
 
 import abi from "../abi"
 
-async function send(to: string, message: string) {
-  let contractAddress = "0xFE758a205F193dD0Bb0eE9502154868B63b4F072"
+const CONTRACT_ADDRESS = "0xFE758a205F193dD0Bb0eE9502154868B63b4F072"
 
+async function send(to: string, message: string, inbox: string) {
   const provider = window["ethereum"]
 
   if (!provider) {
     throw Error("Not connected!")
   }
 
-  const ethersProvider = new ethers.providers.Web3Provider(provider, "rinkeby")
+  const ethersProvider = new ethers.providers.Web3Provider(provider)
 
   // @todo make multichain
   let etherscanProvider = new ethers.providers.EtherscanProvider(
@@ -30,14 +30,17 @@ async function send(to: string, message: string) {
 
   console.log(to, previousTx)
 
-  if (!previousTx) {
-    throw new Error("No previous transaction found")
-  }
+  // if (!previousTx) {
+  //   throw new Error("No previous transaction found")
+  // }
 
   console.log("Previous transaction", previousTx)
 
   // @todo get tx from current chain
-  const theTx = await ethersProvider.getTransaction(previousTx.hash)
+  // const theTx = await ethersProvider.getTransaction(previousTx.hash)
+  const theTx = await ethersProvider.getTransaction(
+    "0xb5b211b4a90879e37b7e543203c909c2b771c85a33b245e9154d89bd00d63ef6"
+  )
 
   console.log("theTx", theTx)
 
@@ -66,7 +69,7 @@ async function send(to: string, message: string) {
   console.log("encrypted message", encryptedMessage)
 
   const contract = new ethers.Contract(
-    contractAddress,
+    CONTRACT_ADDRESS,
     abi,
     ethersProvider.getSigner()
   )
@@ -137,8 +140,6 @@ interface Message {
 }
 
 async function getMessage(messageParams: MessageParams) {
-  let contractAddress = "0x5fbdb2315678afecb367f032d93f642f64180aa3"
-
   const provider = window["ethereum"]
 
   if (!provider) {
@@ -148,7 +149,7 @@ async function getMessage(messageParams: MessageParams) {
   const ethersProvider = new ethers.providers.Web3Provider(provider)
 
   const contract = new ethers.Contract(
-    contractAddress,
+    CONTRACT_ADDRESS,
     abi,
     ethersProvider.getSigner()
   )
@@ -169,6 +170,36 @@ async function getMessage(messageParams: MessageParams) {
   return { message: formattedMessage }
 }
 
+export interface CreateInboxParams {
+  name: string
+  description: string
+  condition: {
+    nftContract: string
+    count: number
+  }
+}
+
+async function createInbox(createInboxParams: CreateInboxParams) {
+  const { name, description, condition } = createInboxParams
+
+  const provider = window["ethereum"]
+
+  if (!provider) {
+    throw Error("Not connected!")
+  }
+
+  const ethersProvider = new ethers.providers.Web3Provider(provider)
+
+  const contract = new ethers.Contract(
+    CONTRACT_ADDRESS,
+    abi,
+    ethersProvider.getSigner()
+  )
+
+  const createInboxTx = await contract.addInbox(name, description, condition)
+  await createInboxTx.wait()
+}
+
 async function getSenders(inbox: string) {
   // @Todo implement me
 
@@ -184,4 +215,4 @@ async function getInboxes() {
   return ["default"]
 }
 
-export { send, getMessage, getSenders, getInboxes }
+export { send, getMessage, getSenders, getInboxes, createInbox }

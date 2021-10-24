@@ -27,11 +27,12 @@ export default function Layout({ children }: any) {
         <title>Tolk</title>
       </Head>
 
-      <div className="min-h-screen m-12">
-        <div className="w-full px-10 rounded-xl bg-beige-500">
-          <div className="flex w-full h-full divide-x ">
-            <div className="w-full max-w-sm px-6 pr-6 py-14 space-y-8">
+      <div className="flex flex-col items-center justify-center min-h-screen">
+        <div className="w-full px-10 rounded-xl bg-beige-500 max-w-7xl">
+          <div className="flex w-full h-full divide-x">
+            <div className="w-full max-w-sm px-6 py-24 pr-6 space-y-8">
               <Profile />
+
               <div className="space-y-2">
                 <Link href="/send">
                   <a className="flex items-center justify-between px-4 font-semibold text-white bg-green-500 rounded-xl py-2.5 hover:opacity-70 transition gap-8">
@@ -56,18 +57,19 @@ export default function Layout({ children }: any) {
               </div>
 
               <Inboxes />
-
-              <button
-                onClick={async () => {
-                  await mint(accounts[0])
-                }}
-              >
-                Mint test nft
-              </button>
             </div>
-            <div className="flex-1 h-full px-20 py-14">{children}</div>
+            <div className="flex-1 h-full px-20 py-24">{children}</div>
           </div>
         </div>
+
+        <button
+          className="mt-12 text-xs"
+          onClick={async () => {
+            await mint(accounts[0])
+          }}
+        >
+          Mint test nft
+        </button>
       </div>
     </div>
   )

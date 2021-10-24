@@ -27,7 +27,7 @@ export default function Layout({ children }: any) {
         <title>Tolk</title>
       </Head>
 
-      <div className="flex flex-col items-center justify-center min-h-screen">
+      <div className="flex flex-col items-center justify-center min-h-screen py-12">
         <div className="w-full px-10 rounded-xl bg-beige-500 max-w-7xl">
           <div className="flex w-full h-full divide-x">
             <div className="w-full max-w-sm px-6 py-24 pr-6 space-y-8">

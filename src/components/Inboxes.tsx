@@ -5,6 +5,7 @@ import Link from "next/link"
 import { useRouter } from "next/router"
 import { useQuery } from "react-query"
 
+import useInboxes from "@hooks/useInboxes"
 import { getInboxes, getSenders } from "@utils/contract"
 
 import { Address } from "./Address"
@@ -36,6 +37,8 @@ function Senders({ inbox }: { inbox: string }) {
   const activeSender = query.address?.toString()
   const activeInbox = query.inbox?.toString()
 
+  const inboxes = useInboxes()
+
   if (!senders) return null
 
   return (
@@ -52,6 +55,8 @@ function Senders({ inbox }: { inbox: string }) {
               )}
             >
               <Address account={sender} />
+
+              {JSON.stringify(inboxes)}
               {/* {!!unread && (
               <span className="flex items-center justify-center w-6 h-6 text-sm text-white bg-green-500 rounded">
                 {unread}

@@ -129,7 +129,7 @@ export default function Send() {
                 <option value="default">Default Inbox</option>
                 {data?.inboxAddeds?.map((inbox) => (
                   <option key={inbox.id} value={inbox.name}>
-                    {inbox.name}
+                    {inbox.name} - {inbox.description}
                   </option>
                 ))}
               </select>

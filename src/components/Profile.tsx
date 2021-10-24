@@ -10,9 +10,8 @@ import { formatAddress } from "@utils/formatter"
 import { ConnectButton } from "./ConnectButton"
 
 export function Profile() {
-  const { accounts } = useMetamask()
+  const { accounts, status } = useMetamask()
   const account = accounts?.[0]
-  const provider = new ethers.providers.Web3Provider(window?.["ethereum"])
 
   const { data: name } = useQuery(
     ["ens", account],

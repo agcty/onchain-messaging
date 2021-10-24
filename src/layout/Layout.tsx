@@ -1,12 +1,10 @@
-import React, { useState } from "react"
+import React from "react"
 
 import { ArrowRightIcon } from "@heroicons/react/solid"
 import dynamic from "next/dynamic"
 import Head from "next/head"
 import Link from "next/link"
 
-import InboxSelect from "@components/InboxSelect"
-import useInboxes from "@hooks/useInboxes"
 import { useMetamask } from "@hooks/useMetamask"
 import { mint } from "@utils/contract"
 
@@ -23,10 +21,6 @@ const Inboxes = dynamic(
 export default function Layout({ children }: any) {
   const { accounts } = useMetamask()
 
-  const inboxes = useInboxes(accounts[0])
-
-  const [selected, setSelected] = useState({ name: "default" })
-
   return (
     <div>
       <Head>
@@ -36,7 +30,7 @@ export default function Layout({ children }: any) {
       <div className="min-h-screen m-12">
         <div className="w-full px-10 rounded-xl bg-beige-500">
           <div className="flex w-full h-full divide-x ">
-            <div className="w-full max-w-sm px-6 pr-6 py-28 space-y-8">
+            <div className="w-full max-w-sm px-6 pr-6 py-14 space-y-8">
               <Profile />
               <div className="space-y-2">
                 <Link href="/send">
@@ -61,8 +55,6 @@ export default function Layout({ children }: any) {
                 </Link>
               </div>
 
-              <InboxSelect selected={selected} setSelected={setSelected} />
-
               <Inboxes />
 
               <button
@@ -73,7 +65,7 @@ export default function Layout({ children }: any) {
                 Mint test nft
               </button>
             </div>
-            <div className="flex-1 h-full px-20 py-28">{children}</div>
+            <div className="flex-1 h-full px-20 py-14">{children}</div>
           </div>
         </div>
       </div>

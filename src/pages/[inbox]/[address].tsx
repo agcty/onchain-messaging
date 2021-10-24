@@ -28,7 +28,7 @@ export default function Chat() {
           Messages from <Address account={address} />
         </h1>
 
-        <div className="flex flex-col w-full h-full px-8 py-4 mx-auto bg-white min-h-[400px] rounded-32 divide-y space-y-4">
+        <div className="flex flex-col w-full h-full px-8 py-4 mx-auto bg-white max-h-[500px] min-h-[300px] rounded-32 divide-y space-y-4">
           <div className="flex-1 overflow-auto space-y-8 max-w-prose">
             {data?.sends?.map((item) => {
               return (

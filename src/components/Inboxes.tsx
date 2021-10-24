@@ -17,7 +17,7 @@ export function Inboxes() {
   if (!data?.inboxAddeds) return null
 
   return (
-    <div className="space-y-2">
+    <div className="px-4 space-y-2">
       <div className="space-y-2">
         <h2 className="text-xs uppercase text-[#8A857B]">Default Inbox</h2>
         <Senders inbox="default" />
@@ -40,12 +40,14 @@ function Senders({ inbox }: { inbox: string }) {
 
   const { data: senders } = useSenders(inbox)
 
+  console.log(inbox, senders)
+
   if (!senders) return <p className="text-sm ">No messages yet</p>
 
   return (
     <ul className="space-y-1">
-      {senders.length ? (
-        senders.map((sender) => (
+      {senders.size ? (
+        [...senders].map((sender) => (
           <li key={sender} className="-mx-4">
             <Link href={`/${inbox}/${sender}`}>
               <a

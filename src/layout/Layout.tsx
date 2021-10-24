@@ -1,10 +1,12 @@
-import React from "react"
+import React, { useState } from "react"
 
 import { ArrowRightIcon } from "@heroicons/react/solid"
 import dynamic from "next/dynamic"
 import Head from "next/head"
 import Link from "next/link"
 
+import InboxSelect from "@components/InboxSelect"
+import useInboxes from "@hooks/useInboxes"
 import { useMetamask } from "@hooks/useMetamask"
 import { mint } from "@utils/contract"
 
@@ -21,6 +23,10 @@ const Inboxes = dynamic(
 export default function Layout({ children }: any) {
   const { accounts } = useMetamask()
 
+  const inboxes = useInboxes(accounts[0])
+
+  const [selected, setSelected] = useState({ name: "default" })
+
   return (
     <div>
       <Head>
@@ -32,7 +38,6 @@ export default function Layout({ children }: any) {
           <div className="flex w-full h-full divide-x ">
             <div className="w-full max-w-xs px-6 pr-6 py-28 space-y-8">
               <Profile />
-
               <div className="space-y-2">
                 <Link href="/send">
                   <a className="flex items-center justify-between px-4 font-semibold text-white bg-green-500 rounded-lg py-2.5 hover:opacity-70 transition gap-8">
@@ -56,7 +61,10 @@ export default function Layout({ children }: any) {
                 </Link>
               </div>
 
+              <InboxSelect selected={selected} setSelected={setSelected} />
+
               <Inboxes />
+
               <button
                 className="text-white"
                 onClick={async () => {

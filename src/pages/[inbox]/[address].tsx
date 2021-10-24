@@ -44,7 +44,7 @@ export default function Chat() {
         </h1>
 
         <div className="flex flex-col w-full h-full px-8 py-4 mx-auto bg-white min-h-[400px] rounded-32 divide-y space-y-4 min-w-[800px]">
-          <div className="flex-1 overflow-auto space-y-8 max-w-prose">
+          <div className="flex-1 overflow-auto space-y-4 max-w-prose">
             &nbsp;
             {data?.pages?.map((item) => {
               return (
@@ -83,7 +83,7 @@ function Message({ message, outgoing, encrypted }: any) {
   return (
     <div
       className={classNames(
-        `relative p-2 pb-6 rounded-[12px] max-w-[60%] break-all`,
+        `relative p-4 pb-6 rounded-[12px] max-w-[60%] break-all`,
         outgoing && `bg-[#F4EFE7] ml-auto`,
         !outgoing && `bg-[#F5F5F5]`,
         !decrypted && `cursor-pointer`

@@ -16,6 +16,7 @@
   "dependencies": {
     "@ethereumjs/common": "^2.5.0",
     "@ethereumjs/tx": "^3.3.2",
+    "@headlessui/react": "^1.4.1",
     "@heroicons/react": "^1.0.5",
     "@metamask/eth-sig-util": "^4.0.0",
     "@metamask/onboarding": "^1.0.1",

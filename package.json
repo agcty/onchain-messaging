@@ -20,6 +20,7 @@
     "@heroicons/react": "^1.0.5",
     "@metamask/eth-sig-util": "^4.0.0",
     "@metamask/onboarding": "^1.0.1",
+    "@splitbee/web": "^0.3.0",
     "@tailwindcss/forms": "^0.3.4",
     "@tailwindcss/typography": "^0.4.1",
     "autoprefixer": "^10.3.7",

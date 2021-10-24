@@ -1,5 +1,6 @@
 import React from "react"
 
+import splitbee from "@splitbee/web"
 import { AppProps } from "next/app"
 import { Toaster } from "react-hot-toast"
 import { QueryClient, QueryClientProvider } from "react-query"
@@ -14,6 +15,8 @@ const queryClient = new QueryClient({
 })
 
 function MyApp({ Component, pageProps }: AppProps): JSX.Element {
+  splitbee.init()
+
   return (
     <QueryClientProvider client={queryClient}>
       <ModalProvider>

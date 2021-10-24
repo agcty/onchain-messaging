@@ -6,7 +6,6 @@ import dynamic from "next/dynamic"
 import toast from "react-hot-toast"
 import { useInfiniteQuery } from "react-query"
 
-import { SendForm } from "@components/SendForm"
 import { useMetamask } from "@hooks/useMetamask"
 import Layout from "@layout/Layout"
 import { getMessage } from "@utils/contract"
@@ -41,11 +40,12 @@ export default function Chat() {
     <Layout>
       <div className="flex flex-col w-auto h-full mx-auto">
         <h1 className="mb-4 text-xl font-bold">
-          Chatting with <Address account={address} />
+          Messages from <Address account={address} />
         </h1>
 
-        <div className="flex flex-col w-full h-full mx-auto overflow-hidden bg-white rounded-32 divide-y space-y-4 min-w-[800px]">
-          <div className="flex-1 px-8 py-4 space-y-8 max-w-prose">
+        <div className="flex flex-col w-full h-full px-8 py-4 mx-auto bg-white min-h-[400px] rounded-32 divide-y space-y-4 min-w-[800px]">
+          <div className="flex-1 overflow-auto space-y-8 max-w-prose">
+            &nbsp;
             {data?.pages?.map((item) => {
               return (
                 <Message
@@ -69,7 +69,6 @@ export default function Chat() {
           >
             Load more messages
           </button>
-          <SendForm />
         </div>
       </div>
     </Layout>

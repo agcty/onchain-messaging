@@ -12,20 +12,24 @@ import { getPublicKey, send } from "@utils/contract"
 export default function Send() {
   interface Fields {
     message: string
+    inbox: string
     address: string
   }
 
   const { register, handleSubmit, reset, watch } = useForm<Fields>({
     mode: "all",
     reValidateMode: "onChange",
+    defaultValues: {
+      inbox: "default",
+    },
   })
 
-  async function onSubmit({ message, address }: Fields) {
+  async function onSubmit({ message, address, inbox }: Fields) {
     try {
       const provider = ethers.getDefaultProvider()
       const recipient = await provider.resolveName(address)
 
-      await send(recipient, message, "default")
+      await send(recipient, message, inbox)
 
       reset({ message: "", address: "" })
     } catch (e) {
@@ -56,7 +60,7 @@ export default function Send() {
         <h1 className="mb-4 text-xl font-bold">Send a message</h1>
 
         <form
-          className="flex flex-col w-full h-full p-8 px-24 py-16 mx-auto overflow-auto text-white bg-green-500 min-w-[800px] rounded-32"
+          className="flex flex-col w-full h-full max-w-xl p-8 px-24 py-16 mx-auto overflow-auto text-white bg-green-500 min-w-[800px] rounded-32"
           onSubmit={handleSubmit(onSubmit)}
         >
           <div className="space-y-4">
@@ -66,10 +70,11 @@ export default function Send() {
               </label>
 
               <input
-                {...register("address")}
+                {...register("address", { required: true })}
                 type="text"
                 className="block w-full py-2 mt-1 border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                placeholder="apes"
+                placeholder="apecollector.eth"
+                required
               />
             </fieldset>
 
@@ -97,6 +102,20 @@ export default function Send() {
 
             <fieldset className="p-4 text-black rounded-xl bg-[#F4EFE7]">
               <label className="block font-semibold" htmlFor="address">
+                Inbox
+              </label>
+
+              <input
+                {...register("inbox", { required: true })}
+                type="text"
+                className="block w-full py-2 mt-1 border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                placeholder="apes"
+                required
+              />
+            </fieldset>
+
+            <fieldset className="p-4 text-black rounded-xl bg-[#F4EFE7]">
+              <label className="block font-semibold" htmlFor="address">
                 Your text
               </label>
 
@@ -105,7 +124,8 @@ export default function Send() {
                 name="message"
                 rows={3}
                 className="block w-full mt-1 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                {...register("message")}
+                {...register("message", { required: true })}
+                required
               />
             </fieldset>
           </div>

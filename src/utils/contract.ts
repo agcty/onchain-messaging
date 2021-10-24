@@ -135,6 +135,8 @@ async function createInbox(createInboxParams: CreateInboxParams) {
     ethersProvider.getSigner()
   )
 
+  console.log(name, description, condition)
+
   const createInboxTx = await contract.addInbox(name, description, condition)
   await createInboxTx.wait()
 }

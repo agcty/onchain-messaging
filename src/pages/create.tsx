@@ -15,6 +15,11 @@ export default function Create() {
   } = useForm<CreateInboxParams>({
     mode: "all",
     reValidateMode: "onChange",
+    defaultValues: {
+      condition: {
+        count: 1,
+      },
+    },
   })
 
   async function onSubmit(params: CreateInboxParams) {
@@ -45,6 +50,7 @@ export default function Create() {
               type="text"
               className="block w-full py-2 mt-1 border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
               placeholder="apes"
+              required
             />
           </fieldset>
 
@@ -59,44 +65,47 @@ export default function Create() {
               rows={3}
               className="block w-full mt-1 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
               {...register("description")}
+              required
             />
           </fieldset>
 
           <fieldset className="p-4 text-black rounded-xl bg-[#F4EFE7]">
             <label className="block" htmlFor="address">
-              NFT Contract
+              NFT Contract Address
             </label>
 
             <input
               {...register("condition.nftContract")}
               type="text"
               className="block w-full py-2 mt-1 border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              placeholder="apes"
+              placeholder="0x1337ABE5"
+              required
             />
           </fieldset>
 
           <fieldset className="p-4 text-black rounded-xl bg-[#F4EFE7]">
             <label className="block" htmlFor="address">
-              NFT Count
+              Required NFT Count
             </label>
 
             <input
               {...register("condition.count")}
               type="text"
               className="block w-full py-2 mt-1 border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              placeholder="apes"
+              placeholder="1"
+              required
             />
           </fieldset>
         </div>
 
-        <p className="mt-10 text-sm text-center">
-          This is message is fully encrypted and immutable.
-          <br /> Only the receiver will be avalaible to decrypt.
-          <br /> Finally chat the way you ape, freely.
+        <p className="max-w-sm mx-auto mt-10 text-sm text-center">
+          Inboxes are a way to categorize your incoming messages.
+          <br /> You can configure your inbox to only allow messages from token
+          holders
         </p>
 
         <button className="px-6 mx-auto mt-10 font-bold text-white bg-green-500 border-none rounded-full py-2.5">
-          Send Message
+          Create Inbox
         </button>
       </form>
     </Layout>

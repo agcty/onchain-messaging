@@ -40,21 +40,21 @@ export default function Layout({ children }: any) {
               <Profile />
               <div className="space-y-2">
                 <Link href="/send">
-                  <a className="flex items-center justify-between px-4 font-semibold text-white bg-green-500 rounded-lg py-2.5 hover:opacity-70 transition gap-8">
+                  <a className="flex items-center justify-between px-4 font-semibold text-white bg-green-500 rounded-xl py-2.5 hover:opacity-70 transition gap-8">
                     <span>Send new message</span>
                     <ArrowRightIcon className="w-5 h-5 text-white"></ArrowRightIcon>
                   </a>
                 </Link>
 
                 <Link href="/create">
-                  <a className="flex items-center justify-between px-4 font-semibold text-white bg-gray-900 rounded-lg py-2.5 hover:opacity-70 transition gap-8">
+                  <a className="flex items-center justify-between px-4 font-semibold text-white bg-gray-900 rounded-xl py-2.5 hover:opacity-70 transition gap-8">
                     <span>Create an inbox</span>
                     <ArrowRightIcon className="w-5 h-5 text-white"></ArrowRightIcon>
                   </a>
                 </Link>
 
                 <Link href="/keys">
-                  <a className="flex items-center justify-between px-4 font-semibold text-white bg-gray-500 rounded-lg py-2.5 hover:opacity-70 transition gap-8">
+                  <a className="flex items-center justify-between px-4 font-semibold text-white bg-gray-500 rounded-xl py-2.5 hover:opacity-70 transition gap-8">
                     <span>Add Public Key</span>
                     <ArrowRightIcon className="w-5 h-5 text-white"></ArrowRightIcon>
                   </a>

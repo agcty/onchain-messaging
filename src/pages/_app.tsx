@@ -9,7 +9,9 @@ import { ModalProvider } from "@hooks/useModal"
 
 import "../styles/tailwind.scss"
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient({
+  defaultOptions: { queries: { retry: false } },
+})
 
 function MyApp({ Component, pageProps }: AppProps): JSX.Element {
   return (

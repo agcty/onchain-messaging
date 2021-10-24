@@ -1,6 +1,7 @@
 import React from "react"
 
 import { ArrowSmRightIcon } from "@heroicons/react/solid"
+import { useRouter } from "next/router"
 import { useForm } from "react-hook-form"
 import toast from "react-hot-toast"
 
@@ -11,6 +12,7 @@ interface Fields {
 }
 
 export function SendForm() {
+  const { query } = useRouter()
   const {
     register,
     handleSubmit,
@@ -25,7 +27,7 @@ export function SendForm() {
     console.log(message)
 
     try {
-      await send("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266", message)
+      await send(query.address.toString(), message)
 
       reset({ message: "" })
     } catch (e) {

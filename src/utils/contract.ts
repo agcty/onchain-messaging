@@ -1,11 +1,10 @@
-import EthCrypto from "eth-crypto"
 import { ethers } from "ethers"
 
 import { MessageParams } from "@types"
 
 import abi from "../abi"
 
-const contractAddress = "0x9fe46736679d2d9a65f0992f2272de9f3c7fa6e0"
+const contractAddress = "0xeA49E182bE2c36c19Ae3E8B0477aFF26C42910AA"
 // const contractAddress  = "0xFE758a205F193dD0Bb0eE9502154868B63b4F072"
 
 async function send(to: string, message: string, inbox: string) {
@@ -32,24 +31,24 @@ async function send(to: string, message: string, inbox: string) {
 
   // @todo get tx from current chain
   // const theTx = await ethersProvider.getTransaction(previousTx.hash)
-  const theTx = await ethersProvider.getTransaction(
-    "0xb5b211b4a90879e37b7e543203c909c2b771c85a33b245e9154d89bd00d63ef6"
-  )
+  // const theTx = await ethersProvider.getTransaction(
+  //   "0xb5b211b4a90879e37b7e543203c909c2b771c85a33b245e9154d89bd00d63ef6"
+  // )
 
-  if (!theTx) {
-    throw new Error("Could not fetch previous transaction")
-  }
+  // if (!theTx) {
+  //   throw new Error("Could not fetch previous transaction")
+  // }
 
-  console.log("Raw transaction", theTx)
+  // console.log("Raw transaction", theTx)
 
-  const pubKey = await getPublicKey(theTx)
+  // const pubKey = await getPublicKey(theTx)
 
-  const encrypted = await EthCrypto.encryptWithPublicKey(
-    pubKey.slice(2),
-    message
-  )
+  // const encrypted = await EthCrypto.encryptWithPublicKey(
+  //   pubKey.slice(2),
+  //   message
+  // )
 
-  const encryptedMessage = EthCrypto.cipher.stringify(encrypted)
+  // const encryptedMessage = EthCrypto.cipher.stringify(encrypted)
 
   const contract = new ethers.Contract(
     contractAddress,
@@ -57,7 +56,7 @@ async function send(to: string, message: string, inbox: string) {
     ethersProvider.getSigner()
   )
 
-  const tx = await contract.send(to, encryptedMessage, "default")
+  const tx = await contract.send(to, message, "default")
   await tx.wait()
 }
 

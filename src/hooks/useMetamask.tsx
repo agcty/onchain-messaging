@@ -69,7 +69,7 @@ const reducer = (state: State, action: Action): State => {
 function MetamaskContextProvider({ children }: { children: React.ReactNode }) {
   const [state, dispatch] = useReducer(reducer, INIT_STATE)
 
-  const chain = getChain("local")
+  const chain = getChain("rinkeby")
 
   const onboarding = useRef<MetaMaskOnboarding>()
 

@@ -1,15 +1,13 @@
-import assert from "assert"
-
-import EthCrypto from "eth-crypto"
+import { encrypt } from "@metamask/eth-sig-util"
 import { ethers } from "ethers"
 
 import { MessageParams } from "@types"
 
 import abi from "../abi"
 
-const CONTRACT_ADDRESS = "0xFE758a205F193dD0Bb0eE9502154868B63b4F072"
+const CONTRACT_ADDRESS = "0x12D7e04019EAEf6Fac940D3F600391E0adc9d66d"
 
-async function send(to: string, message: string, inbox: string) {
+async function send(to: string, message: string, inbox: string = "default") {
   const provider = window["ethereum"]
 
   if (!provider) {
@@ -18,55 +16,30 @@ async function send(to: string, message: string, inbox: string) {
 
   const ethersProvider = new ethers.providers.Web3Provider(provider)
 
-  // @todo make multichain
-  let etherscanProvider = new ethers.providers.EtherscanProvider(
-    "rinkeby",
-    "GRHCUQKKRMWE6K1D34CWC3AX6XYEBKCCKZ"
-  )
-
-  const history = await etherscanProvider.getHistory(to)
-
-  const previousTx = history.find((tx) => tx.from === to)
-
-  console.log(to, previousTx)
-
-  // if (!previousTx) {
-  //   throw new Error("No previous transaction found")
-  // }
-
-  console.log("Previous transaction", previousTx)
-
-  // @todo get tx from current chain
-  // const theTx = await ethersProvider.getTransaction(previousTx.hash)
-  const theTx = await ethersProvider.getTransaction(
-    "0xb5b211b4a90879e37b7e543203c909c2b771c85a33b245e9154d89bd00d63ef6"
-  )
-
-  console.log("theTx", theTx)
-
-  if (!theTx) {
-    throw new Error("Could not fetch previous transaction")
-  }
-
-  console.log("Raw transaction", theTx)
-
-  const pubKey = await getPublicKey(theTx)
+  const pubKey = await getPublicKey(to)
 
   console.log("public key", pubKey)
 
-  assert(
-    ethers.utils.computeAddress(pubKey) === to,
-    "WTF. Extracted address does not match"
-  )
+  let finalMessage = message
+  let encrypted = false
 
-  const encrypted = await EthCrypto.encryptWithPublicKey(
-    pubKey.slice(2),
-    message
-  )
+  if (pubKey) {
+    encrypted = true
+    finalMessage = ethers.utils.hexlify(
+      Buffer.from(
+        JSON.stringify(
+          encrypt({
+            publicKey: pubKey,
+            data: message,
+            version: "x25519-xsalsa20-poly1305",
+          })
+        ),
+        "utf8"
+      )
+    )
 
-  const encryptedMessage = EthCrypto.cipher.stringify(encrypted)
-
-  console.log("encrypted message", encryptedMessage)
+    console.log("encrypted message", finalMessage)
+  }
 
   const contract = new ethers.Contract(
     CONTRACT_ADDRESS,
@@ -74,62 +47,26 @@ async function send(to: string, message: string, inbox: string) {
     ethersProvider.getSigner()
   )
 
-  const tx = await contract.send(to, encryptedMessage, "default")
+  const tx = await contract.send(to, finalMessage, inbox, encrypted)
   await tx.wait()
 }
 
-// See https://gist.github.com/chrsengel/2b29809b8f7281b8f10bbe041c1b5e00
-async function getPublicKey(tx: any) {
-  if (tx.type === 2) {
-    delete tx.gasPrice
+export async function getPublicKey(address: string) {
+  const provider = window["ethereum"]
+
+  if (!provider) {
+    throw Error("Not connected!")
   }
 
-  const raw = await getRawTransaction(tx)
+  const ethersProvider = new ethers.providers.Web3Provider(provider)
 
-  const signature = ethers.utils.joinSignature({
-    r: tx.r,
-    s: tx.s,
-    v: tx.v,
-  })
+  const contract = new ethers.Contract(
+    CONTRACT_ADDRESS,
+    abi,
+    ethersProvider.getSigner()
+  )
 
-  const msgHash = ethers.utils.keccak256(raw) // as specified by ECDSA
-  const msgBytes = ethers.utils.arrayify(msgHash) // create binary hash
-  const recoveredPubKey = ethers.utils.recoverPublicKey(msgBytes, signature)
-
-  return recoveredPubKey
-}
-
-async function getRawTransaction(tx) {
-  function addKey(accum, key) {
-    if (typeof tx[key] !== "undefined") {
-      accum[key] = tx[key]
-    }
-    return accum
-  }
-
-  // Extract the relevant parts of the transaction and signature
-  const txFields =
-    "accessList chainId data gasPrice gasLimit maxFeePerGas maxPriorityFeePerGas nonce to type value".split(
-      " "
-    )
-  const sigFields = "v r s".split(" ")
-
-  const rsTx = await ethers.utils.resolveProperties(txFields.reduce(addKey, {}))
-  const signature = ethers.utils.joinSignature(sigFields.reduce(addKey, {}))
-
-  // Seriailze the signed transaction
-  const raw = ethers.utils.serializeTransaction(rsTx)
-
-  // Double check things went well
-  if (
-    ethers.utils.keccak256(
-      ethers.utils.serializeTransaction(rsTx, signature)
-    ) !== tx.hash
-  ) {
-    throw new Error("serializing failed!")
-  }
-
-  return raw
+  return contract.publicKeys(address)
 }
 
 interface Message {
@@ -137,6 +74,7 @@ interface Message {
   receiver: string
   messageId: number
   content: string
+  encrypted: boolean
 }
 
 async function getMessage(messageParams: MessageParams) {
@@ -165,6 +103,7 @@ async function getMessage(messageParams: MessageParams) {
     receiver: message.receiver,
     messageId: messageParams.messageId,
     content: message.content,
+    encrypted: message.encrypted,
   }
 
   return { message: formattedMessage }
@@ -200,6 +139,25 @@ async function createInbox(createInboxParams: CreateInboxParams) {
   await createInboxTx.wait()
 }
 
+async function addPublicKey(publicKey: string) {
+  const provider = window["ethereum"]
+
+  if (!provider) {
+    throw Error("Not connected!")
+  }
+
+  const ethersProvider = new ethers.providers.Web3Provider(provider)
+
+  const contract = new ethers.Contract(
+    CONTRACT_ADDRESS,
+    abi,
+    ethersProvider.getSigner()
+  )
+
+  const createInboxTx = await contract.addPublicKey(publicKey)
+  await createInboxTx.wait()
+}
+
 async function getSenders(inbox: string) {
   // @Todo implement me
 
@@ -215,4 +173,4 @@ async function getInboxes() {
   return ["default"]
 }
 
-export { send, getMessage, getSenders, getInboxes, createInbox }
+export { send, getMessage, getSenders, getInboxes, createInbox, addPublicKey }

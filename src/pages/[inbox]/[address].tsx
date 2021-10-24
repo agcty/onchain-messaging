@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from "react"
 
 import classNames from "classnames"
 import { useRouter } from "next/dist/client/router"
@@ -46,11 +46,15 @@ export default function Chat() {
 
         <div className="flex flex-col w-full h-full mx-auto overflow-hidden bg-white rounded-32 divide-y space-y-4 min-w-[800px]">
           <div className="flex-1 px-8 py-4 space-y-8 max-w-prose">
-            {data?.pages?.map((item) => (
-              <Message key={item.message.messageId}>
-                {item.message.content}
-              </Message>
-            ))}
+            {data?.pages?.map((item) => {
+              return (
+                <Message
+                  key={item.message.messageId}
+                  message={item.message.content}
+                  encrypted={item.message.encrypted}
+                />
+              )
+            })}
           </div>
 
           <button
@@ -72,16 +76,37 @@ export default function Chat() {
   )
 }
 
-function Message({ children, outgoing }: any) {
+function Message({ message, outgoing, encrypted }: any) {
+  const [decryptedMessage, setDecryptedMessage] = useState(message)
+  const [decrypted, setDecrypted] = useState(!encrypted)
+  const { accounts } = useMetamask()
+
   return (
     <div
       className={classNames(
-        `p-2 pb-6 rounded-[12px] max-w-[60%]`,
+        `relative p-2 pb-6 rounded-[12px] max-w-[60%] break-all`,
         outgoing && `bg-[#F4EFE7] ml-auto`,
-        !outgoing && `bg-[#F5F5F5]`
+        !outgoing && `bg-[#F5F5F5]`,
+        !decrypted && `cursor-pointer`
       )}
+      onClick={async () => {
+        if (decrypted) return
+
+        const message = await window["ethereum"].request({
+          method: "eth_decrypt",
+          params: [decryptedMessage, accounts[0]],
+        })
+
+        setDecryptedMessage(message)
+        setDecrypted(true)
+      }}
     >
-      {children}
+      <div className={!decrypted ? `blur-lg` : ""}>{decryptedMessage}</div>
+      {!decrypted && (
+        <button className="absolute p-2 bg-white rounded-lg top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+          Decrypt
+        </button>
+      )}
     </div>
   )
 }

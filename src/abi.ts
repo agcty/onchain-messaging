@@ -1,5 +1,10 @@
 const abi = [
   {
+    inputs: [],
+    stateMutability: "nonpayable",
+    type: "constructor",
+  },
+  {
     anonymous: false,
     inputs: [
       {
@@ -15,7 +20,7 @@ const abi = [
         type: "string",
       },
       {
-        indexed: true,
+        indexed: false,
         internalType: "string",
         name: "description",
         type: "string",
@@ -48,17 +53,36 @@ const abi = [
       {
         indexed: true,
         internalType: "address",
-        name: "_from",
+        name: "sender",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "string",
+        name: "key",
+        type: "string",
+      },
+    ],
+    name: "KeyAdded",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "sender",
         type: "address",
       },
       {
         indexed: true,
         internalType: "address",
-        name: "_to",
+        name: "receiver",
         type: "address",
       },
       {
-        indexed: true,
+        indexed: false,
         internalType: "string",
         name: "content",
         type: "string",
@@ -68,6 +92,12 @@ const abi = [
         internalType: "string",
         name: "inboxName",
         type: "string",
+      },
+      {
+        indexed: false,
+        internalType: "bool",
+        name: "encrypted",
+        type: "bool",
       },
     ],
     name: "Send",
@@ -104,6 +134,19 @@ const abi = [
       },
     ],
     name: "addInbox",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "string",
+        name: "publicKey",
+        type: "string",
+      },
+    ],
+    name: "addPublicKey",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
@@ -223,6 +266,30 @@ const abi = [
         name: "inboxName",
         type: "string",
       },
+      {
+        internalType: "bool",
+        name: "encrypted",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    name: "publicKeys",
+    outputs: [
+      {
+        internalType: "string",
+        name: "",
+        type: "string",
+      },
     ],
     stateMutability: "view",
     type: "function",
@@ -243,6 +310,11 @@ const abi = [
         internalType: "string",
         name: "inboxName",
         type: "string",
+      },
+      {
+        internalType: "bool",
+        name: "encrypted",
+        type: "bool",
       },
     ],
     name: "send",

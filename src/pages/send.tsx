@@ -1,10 +1,13 @@
 import React from "react"
 
+import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/solid"
+import { ethers } from "ethers"
 import { useForm } from "react-hook-form"
 import toast from "react-hot-toast"
+import { useQuery } from "react-query"
 
 import Layout from "@layout/Layout"
-import { send } from "@utils/contract"
+import { getPublicKey, send } from "@utils/contract"
 
 export default function Send() {
   interface Fields {
@@ -12,25 +15,40 @@ export default function Send() {
     address: string
   }
 
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { isValid, isSubmitting },
-  } = useForm<Fields>({
+  const { register, handleSubmit, reset, watch } = useForm<Fields>({
     mode: "all",
     reValidateMode: "onChange",
   })
 
   async function onSubmit({ message, address }: Fields) {
     try {
-      await send(address, message, "default")
+      const provider = ethers.getDefaultProvider()
+      const recipient = await provider.resolveName(address)
+
+      await send(recipient, message, "default")
+
       reset({ message: "", address: "" })
     } catch (e) {
       console.error(e)
       toast.error(e.message)
     }
   }
+
+  const recipient = watch("address")
+
+  const { data: pubKey, isLoading: pubKeyLoading } = useQuery(
+    ["getPublicKey", recipient],
+    async () => {
+      const provider = ethers.getDefaultProvider()
+      const address = await provider.resolveName(recipient)
+
+      return getPublicKey(address)
+    },
+    {
+      enabled:
+        !!recipient?.match(/.*\.eth$/) || ethers.utils.isAddress(recipient),
+    }
+  )
 
   return (
     <Layout>
@@ -54,6 +72,28 @@ export default function Send() {
                 placeholder="apes"
               />
             </fieldset>
+
+            <div className="p-4 text-black rounded-xl bg-[#F4EFE7] space-y-2">
+              <p className="block font-semibold">Encryption Status</p>
+              <p className="font-bold">
+                {pubKeyLoading ? (
+                  `Waiting…`
+                ) : !!pubKey ? (
+                  <div className="flex items-center space-x-1">
+                    <CheckCircleIcon className="inline-block w-8 h-8 text-green-400" />{" "}
+                    <div>
+                      Fully Encrypted using public key{" "}
+                      <code className="text-sm">{pubKey}</code>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex items-center space-x-1">
+                    <XCircleIcon className="inline-block w-8 h-8 text-red-500" />
+                    <div>Not encrypted!</div>
+                  </div>
+                )}
+              </p>
+            </div>
 
             <fieldset className="p-4 text-black rounded-xl bg-[#F4EFE7]">
               <label className="block font-semibold" htmlFor="address">

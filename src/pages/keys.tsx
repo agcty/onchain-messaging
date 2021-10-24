@@ -53,7 +53,7 @@ export default function Keys() {
         <h1 className="mb-4 text-xl font-bold">Add a public key</h1>
 
         <form
-          className="flex flex-col w-full h-full p-8 px-24 py-16 mx-auto overflow-auto text-white bg-gray-500 min-w-[800px] rounded-32"
+          className="flex flex-col w-full h-full p-8 px-24 py-16 mx-auto overflow-auto text-white bg-gray-500 rounded-32"
           onSubmit={handleSubmit(onSubmit)}
         >
           <div className="space-y-4">

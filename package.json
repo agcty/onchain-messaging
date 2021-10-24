@@ -40,7 +40,8 @@
     "react-query": "^3.27.0",
     "sass": "^1.42.1",
     "tailwindcss": "^2.2.16",
-    "urql": "^2.0.5"
+    "urql": "^2.0.5",
+    "use-debounce": "^7.0.0"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.14.1",

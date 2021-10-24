@@ -5,11 +5,15 @@ import { ethers } from "ethers"
 import { useForm } from "react-hook-form"
 import toast from "react-hot-toast"
 import { useQuery } from "react-query"
+import { useDebounce } from "use-debounce"
 
+import useInboxes from "@hooks/useInboxes"
+import { useMetamask } from "@hooks/useMetamask"
 import Layout from "@layout/Layout"
 import { getPublicKey, send } from "@utils/contract"
 
 export default function Send() {
+  const { accounts } = useMetamask()
   interface Fields {
     message: string
     inbox: string
@@ -54,13 +58,18 @@ export default function Send() {
     }
   )
 
+  const [value] = useDebounce(recipient, 1000)
+  const { data } = useInboxes(value)
+
+  console.log(data)
+
   return (
     <Layout>
       <div className="flex flex-col h-full">
         <h1 className="mb-4 text-xl font-bold">Send a message</h1>
 
         <form
-          className="flex flex-col w-full h-full max-w-xl p-8 px-24 py-16 mx-auto overflow-auto text-white bg-green-500 min-w-[800px] rounded-32"
+          className="flex flex-col w-full h-full p-8 px-24 py-16 overflow-auto text-white bg-green-500 rounded-32"
           onSubmit={handleSubmit(onSubmit)}
         >
           <div className="space-y-4">
@@ -87,14 +96,20 @@ export default function Send() {
                   <div className="flex items-center space-x-1">
                     <CheckCircleIcon className="inline-block w-8 h-8 text-green-400" />{" "}
                     <div>
-                      Fully Encrypted using public key{" "}
-                      <code className="text-sm">{pubKey}</code>
+                      Fully encrypted using public key
+                      <p className="font-mono text-xs font-normal">{pubKey}</p>
                     </div>
                   </div>
                 ) : (
                   <div className="flex items-center space-x-1">
                     <XCircleIcon className="inline-block w-8 h-8 text-red-500" />
-                    <div>Not encrypted!</div>
+                    <div>
+                      Not encrypted!
+                      <p className="text-xs font-normal">
+                        This message will be saved in plaintext as the receiver
+                        has not added an encryption key yet
+                      </p>
+                    </div>
                   </div>
                 )}
               </p>
@@ -105,13 +120,19 @@ export default function Send() {
                 Inbox
               </label>
 
-              <input
+              <select
                 {...register("inbox", { required: true })}
-                type="text"
                 className="block w-full py-2 mt-1 border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                 placeholder="apes"
                 required
-              />
+              >
+                <option value="default">Default Inbox</option>
+                {data?.inboxAddeds?.map((inbox) => (
+                  <option key={inbox.id} value={inbox.name}>
+                    {inbox.name}
+                  </option>
+                ))}
+              </select>
             </fieldset>
 
             <fieldset className="p-4 text-black rounded-xl bg-[#F4EFE7]">
@@ -130,8 +151,9 @@ export default function Send() {
             </fieldset>
           </div>
 
-          <p className="mt-10 text-sm text-center">
-            This is message is fully encrypted and immutable.
+          <p className="max-w-xs mx-auto mt-10 text-sm text-center">
+            This message is fully encrypted and immutable if the receiver has a
+            public key set up.
             <br /> Only the receiver will be avalaible to decrypt.
             <br /> Finally chat the way you ape, freely.
           </p>

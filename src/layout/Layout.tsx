@@ -33,10 +33,10 @@ export default function Layout({ children }: any) {
         <title>Tolk</title>
       </Head>
 
-      <div className="flex flex-col items-center justify-center min-h-screen py-12">
-        <div className="px-10 rounded-xl bg-beige-500">
+      <div className="min-h-screen m-12">
+        <div className="w-full px-10 rounded-xl bg-beige-500">
           <div className="flex w-full h-full divide-x ">
-            <div className="w-full max-w-xs px-6 pr-6 py-28 space-y-8">
+            <div className="w-full max-w-sm px-6 pr-6 py-28 space-y-8">
               <Profile />
               <div className="space-y-2">
                 <Link href="/send">
@@ -66,7 +66,6 @@ export default function Layout({ children }: any) {
               <Inboxes />
 
               <button
-                className="text-white"
                 onClick={async () => {
                   await mint(accounts[0])
                 }}
@@ -74,7 +73,7 @@ export default function Layout({ children }: any) {
                 Mint test nft
               </button>
             </div>
-            <div className="flex-1 h-full px-24 py-28">{children}</div>
+            <div className="flex-1 h-full px-20 py-28">{children}</div>
           </div>
         </div>
       </div>

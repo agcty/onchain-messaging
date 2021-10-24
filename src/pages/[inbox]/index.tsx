@@ -5,7 +5,7 @@ import Layout from "@layout/Layout"
 export default function Home() {
   return (
     <Layout>
-      <p className="text-center">Hello World. Check the sidebar ser</p>
+      <p className="sender">Select a sender from the sidebar!</p>
     </Layout>
   )
 }

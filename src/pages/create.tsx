@@ -36,7 +36,7 @@ export default function Create() {
       <h1 className="mb-4 text-xl font-bold">Create new Inbox</h1>
 
       <form
-        className="flex flex-col w-full h-full p-8 px-24 py-12 mx-auto overflow-auto text-white bg-black rounded-32 min-w-[800px]"
+        className="flex flex-col w-full h-full p-8 px-24 py-16 mx-auto overflow-auto text-white bg-black rounded-32"
         onSubmit={handleSubmit(onSubmit)}
       >
         <div className="space-y-6">

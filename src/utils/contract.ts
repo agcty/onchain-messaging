@@ -1,6 +1,7 @@
 import { encrypt } from "@metamask/eth-sig-util"
 import { ethers } from "ethers"
 
+import nftAbi from "@nftAbi"
 import { MessageParams } from "@types"
 
 import abi from "../abi"
@@ -158,6 +159,25 @@ async function addPublicKey(publicKey: string) {
   await createInboxTx.wait()
 }
 
+async function mint(account: string) {
+  const provider = window["ethereum"]
+
+  if (!provider) {
+    throw Error("Not connected!")
+  }
+
+  const ethersProvider = new ethers.providers.Web3Provider(provider)
+
+  const contract = new ethers.Contract(
+    "0x0C867cEd3EC2F708E1F405FfFB500cD17d5Cc1f6",
+    nftAbi,
+    ethersProvider.getSigner()
+  )
+
+  const createInboxTx = await contract.safeMint(account)
+  await createInboxTx.wait()
+}
+
 async function getSenders(inbox: string) {
   // @Todo implement me
 
@@ -173,4 +193,12 @@ async function getInboxes() {
   return ["default"]
 }
 
-export { send, getMessage, getSenders, getInboxes, createInbox, addPublicKey }
+export {
+  send,
+  getMessage,
+  getSenders,
+  getInboxes,
+  createInbox,
+  addPublicKey,
+  mint,
+}

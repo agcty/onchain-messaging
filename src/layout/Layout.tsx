@@ -5,6 +5,9 @@ import dynamic from "next/dynamic"
 import Head from "next/head"
 import Link from "next/link"
 
+import { useMetamask } from "@hooks/useMetamask"
+import { mint } from "@utils/contract"
+
 const Profile = dynamic(
   () => import("@components/Profile").then((m) => m.Profile),
   { ssr: false }
@@ -16,6 +19,8 @@ const Inboxes = dynamic(
 )
 
 export default function Layout({ children }: any) {
+  const { accounts } = useMetamask()
+
   return (
     <div>
       <Head>
@@ -52,6 +57,14 @@ export default function Layout({ children }: any) {
               </div>
 
               <Inboxes />
+              <button
+                className="text-white"
+                onClick={async () => {
+                  await mint(accounts[0])
+                }}
+              >
+                Mint test nft
+              </button>
             </div>
             <div className="flex-1 h-full px-24 py-28">{children}</div>
           </div>
